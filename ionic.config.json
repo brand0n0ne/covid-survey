@@ -1,0 +1,8 @@
+{
+  "name": "Covid-Survey",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular",
+  "id": "c5490567"
+}
