@@ -1,17 +1,65 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Tab 2
+      Registros
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 2</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <ion-card>
+    <ion-card-header>
+      Valores que muestran si persona tuvo contacto con otras
+    </ion-card-header>
+    <ion-card-content>
+      <canvas #contacto></canvas>
+    </ion-card-content>
+  </ion-card>
 
-  <app-explore-container name="Tab 2 page"></app-explore-container>
+  <ion-card>
+    <ion-card-header>
+      Valores que muestran si persona contagio en casa
+    </ion-card-header>
+    <ion-card-content>
+      <canvas #contagioEnCasa></canvas>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      Valores que muestran si persona habia ingresado a algun hospital
+    </ion-card-header>
+    <ion-card-content>
+      <canvas #ingresoHospitalario></canvas>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      Valores que muestran si persona tuvo covid anteriormente
+    </ion-card-header>
+    <ion-card-content>
+      <canvas #padecimientoCovid></canvas>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      Valores que muestran si persona tuvo alguna recaida
+    </ion-card-header>
+    <ion-card-content>
+      <canvas #recaida></canvas>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card>
+    <ion-card-header>
+      Valores que muestran si persona es sintomatica o asintomatica
+    </ion-card-header>
+    <ion-card-content>
+      <canvas #tipoDePadecimiento></canvas>
+    </ion-card-content>
+  </ion-card>
 </ion-content>
+
+

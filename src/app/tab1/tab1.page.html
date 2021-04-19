@@ -1,17 +1,163 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
-      Tab 1
+      Encuesta
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <form [formGroup]="userForm" (ngSubmit)="onSubmit()" novalidate>
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+    <ion-radio-group formControlName="padecimientoCovid">
+      <ion-list-header>
+        <ion-label>¿Ha padecido La Enfermedad COVID-19?</ion-label>
+      </ion-list-header>
+      <ion-item>
+         <ion-label>Si</ion-label>
+         <ion-radio value="si"></ion-radio>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>No</ion-label>
+        <ion-radio value="no"></ion-radio>
+     </ion-item>
+
+      <div *ngIf="getControl.controls.padecimientoCovid.touched && getControl.controls.padecimientoCovid.invalid" class="text-danger">
+        <ion-label position="stacked" color="danger" *ngIf="getControl.controls.padecimientoCovid.errors.required">Este campo es quererido</ion-label>
+      </div>
+    </ion-radio-group>
+
+    <ion-radio-group formControlName="tipoDePadecimiento">
+      <ion-list-header>
+        <ion-label>¿Qué tipo de padecimiento tiene o tuvo?</ion-label>
+      </ion-list-header>
+      <ion-item>
+         <ion-label>Sintomático</ion-label>
+         <ion-radio value="Sintomático"></ion-radio>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Asintomático</ion-label>
+        <ion-radio value="Asintomático"></ion-radio>
+     </ion-item>
+
+      <div *ngIf="getControl.controls.tipoDePadecimiento.touched && getControl.controls.tipoDePadecimiento.invalid" class="text-danger">
+        <ion-label position="stacked" color="danger" *ngIf="getControl.controls.tipoDePadecimiento.errors.required">Este campo es quererido</ion-label>
+      </div>
+    </ion-radio-group>
+
+    <ion-list>
+      <ion-list-header>
+        <ion-label>¿Síntomas que tiene al momento?</ion-label>
+      </ion-list-header>
+      <ion-item>
+        <ion-select multiple="true" formControlName="sintomas" okText="Listo" cancelText="Cancelar">
+          <ion-select-option value="Disnea">Disnea</ion-select-option>
+          <ion-select-option value="Tos">Tos</ion-select-option>
+          <ion-select-option value="Debilidad ">Debilidad </ion-select-option>
+          <ion-select-option value="Muscular">Muscular</ion-select-option>
+          <ion-select-option value="AlteracionesNeurológicas">Alteraciones neurológicas</ion-select-option>
+          <ion-select-option value="AlteracionesNeurológicas">Alteraciones cutáneas</ion-select-option>
+        </ion-select>
+        <div *ngIf="getControl.controls.sintomas.touched && getControl.controls.sintomas.invalid" class="text-danger">
+          <ion-label position="stacked" color="danger" *ngIf="getControl.controls.sintomas.errors.required">Este campo es quererido</ion-label>
+        </div>
+      </ion-item>
+    </ion-list>
+
+    <ion-radio-group formControlName="recaida">
+      <ion-list-header>
+        <ion-label>¿Ha tenido alguna recaída?</ion-label>
+      </ion-list-header>
+      <ion-item>
+         <ion-label>Si</ion-label>
+         <ion-radio value="si"></ion-radio>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>No</ion-label>
+        <ion-radio value="no"></ion-radio>
+     </ion-item>
+
+      <div *ngIf="getControl.controls.recaida.touched && getControl.controls.recaida.invalid" class="text-danger">
+        <ion-label position="stacked" color="danger" *ngIf="getControl.controls.recaida.errors.required">Este campo es quererido</ion-label>
+      </div>
+    </ion-radio-group>
+
+    <ion-radio-group formControlName="ingresoHospitalario">
+      <ion-list-header>
+        <ion-label>¿Tuviste algún ingreso hospitalario durante el padecimiento?</ion-label>
+      </ion-list-header>
+      <ion-item>
+         <ion-label>Si</ion-label>
+         <ion-radio value="si"></ion-radio>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>No</ion-label>
+        <ion-radio value="no"></ion-radio>
+     </ion-item>
+
+      <div *ngIf="getControl.controls.ingresoHospitalario.touched && getControl.controls.ingresoHospitalario.invalid" class="text-danger">
+        <ion-label position="stacked" color="danger" *ngIf="getControl.controls.ingresoHospitalario.errors.required">Este campo es quererido</ion-label>
+      </div>
+    </ion-radio-group>
+
+    <ion-radio-group formControlName="contactoConPersona">
+      <ion-list-header>
+        <ion-label>¿Tuvo contacto con alguna persona antes de darse cuenta de que era portador del virus?</ion-label>
+      </ion-list-header>
+      <ion-item>
+         <ion-label>Si</ion-label>
+         <ion-radio value="si"></ion-radio>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>No</ion-label>
+        <ion-radio value="no"></ion-radio>
+     </ion-item>
+
+      <div *ngIf="getControl.controls.contactoConPersona.touched && getControl.controls.contactoConPersona.invalid" class="text-danger">
+        <ion-label position="stacked" color="danger" *ngIf="getControl.controls.contactoConPersona.errors.required">Este campo es quererido</ion-label>
+      </div>
+    </ion-radio-group>
+
+    <ion-list>
+      <ion-list-header>
+        <ion-label>¿Que tipo de examen te realizaste?</ion-label>
+      </ion-list-header>
+      <ion-item>
+        <ion-select multiple="true" formControlName="tipoDeExamenRealizado" okText="Listo" cancelText="Cancelar">
+          <ion-select-option value="PCR">Prueba PCR</ion-select-option>
+          <ion-select-option value="Serológica">Prueba serológica</ion-select-option>
+          <ion-select-option value="Antigenos ">Prueba rápida de antígenos </ion-select-option>
+        </ion-select>
+        <div *ngIf="getControl.controls.tipoDeExamenRealizado.touched && getControl.controls.tipoDeExamenRealizado.invalid" class="text-danger">
+          <ion-label position="stacked" color="danger" *ngIf="getControl.controls.tipoDeExamenRealizado.errors.required">Este campo es quererido</ion-label>
+        </div>
+      </ion-item>
+    </ion-list>
+
+    <ion-radio-group formControlName="contagioEnCasa">
+      <ion-list-header>
+        <ion-label>¿Contagio a algún personal de su hogar?</ion-label>
+      </ion-list-header>
+      <ion-item>
+         <ion-label>Si</ion-label>
+         <ion-radio value="si"></ion-radio>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>No</ion-label>
+        <ion-radio value="no"></ion-radio>
+     </ion-item>
+
+      <div *ngIf="getControl.controls.contagioEnCasa.touched && getControl.controls.contagioEnCasa.invalid" class="text-danger">
+        <ion-label position="stacked" color="danger" *ngIf="getControl.controls.contagioEnCasa.errors.required">Este campo es quererido</ion-label>
+      </div>
+    </ion-radio-group>
+  
+    <ion-button color="secondary" expand="block" type="submit">Enviar</ion-button>
+  </form>
 </ion-content>
