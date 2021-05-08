@@ -6,7 +6,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content *ngIf="submittedForm === 'false' " [fullscreen]="true">
   <form [formGroup]="userForm" (ngSubmit)="onSubmit()" novalidate>
 
     <ion-radio-group formControlName="padecimientoCovid">
@@ -157,7 +157,24 @@
         <ion-label position="stacked" color="danger" *ngIf="getControl.controls.contagioEnCasa.errors.required">Este campo es quererido</ion-label>
       </div>
     </ion-radio-group>
-  
     <ion-button color="secondary" expand="block" type="submit">Enviar</ion-button>
   </form>
+</ion-content>
+
+<ion-content *ngIf="submittedForm === 'true' " [fullscreen]="true">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-subtitle>Encuesta Registrada</ion-card-subtitle>
+      <ion-card-title>Covid-19</ion-card-title>
+    </ion-card-header>
+  
+    <ion-card-content>
+      Muchas gracias, tus datos han sido registrados en nuestra base de datos y se le ha reprogramado una encuesta para dentro de 15 dias.
+      <br>
+      <br>
+      <br>
+      Opcion de responder de inmediato
+      <ion-button color="primary" (click)="redoSurvey()" >Responder</ion-button>
+    </ion-card-content>
+  </ion-card>
 </ion-content>

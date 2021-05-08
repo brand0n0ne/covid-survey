@@ -1,7 +1,11 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, Input } from '@angular/core';
 import { Chart, registerables } from 'chart.js';
 import { map } from 'rxjs/operators';
 import { GlobalSurveyervice } from '../services/firebase-service';
+import { GoogleMapComponent } from './mapComponent/google-map';
+import {EmitterService} from "../../services/emitter-service"
+import { Plugins } from '@capacitor/core';
+const { Storage } = Plugins;
 
 @Component({
   selector: 'app-tab2',
@@ -11,7 +15,7 @@ import { GlobalSurveyervice } from '../services/firebase-service';
 
 
 
-export class Tab2Page implements OnInit, OnDestroy {
+export class Tab2Page implements OnDestroy {
   
   @ViewChild('contacto') contactoChart;
   @ViewChild('contagioEnCasa') contagioEnCasaChart;
@@ -19,12 +23,15 @@ export class Tab2Page implements OnInit, OnDestroy {
   @ViewChild('padecimientoCovid') padecimientoChart;
   @ViewChild('recaida') recaidaChart;
   @ViewChild('tipoDePadecimiento') tipoDePadecimientoChart;
+  @ViewChild('map', { read: '', static: false}) mapComponent: GoogleMapComponent;
+  @Input() heatMapList: string;
   contactoC: any;
   contagio:any;
   hospital:any;
   padecimiento:any;
   recaidaC:any;
   tipoPadecimiento:any;
+  positions = [];
   
 
   constructor(private globalSurveyervice: GlobalSurveyervice) {}
@@ -66,11 +73,11 @@ export class Tab2Page implements OnInit, OnDestroy {
     this.createBarCharts();
   }
 
-  ngOnInit() {
+  ionViewWillEnter() {
     this.retrieveTutorials();
   }
 
-  retrieveTutorials(): void {
+  async retrieveTutorials() {
     this.globalSurveyervice.getAll().snapshotChanges().pipe(
       map(changes =>
         changes.map(c =>
@@ -78,8 +85,44 @@ export class Tab2Page implements OnInit, OnDestroy {
         )
       )
     ).subscribe(data => {
+      this.contacto={
+        si: 0,
+        no: 0
+      }
+    
+      this.contagioEnCasa={
+        si: 0,
+        no: 0
+      }
+    
+      this.ingresoHospitalario={
+        si: 0,
+        no: 0
+      }
+    
+      this.padecimientoCovid={
+        si: 0,
+        no: 0
+      }
+    
+      this.recaida={
+        si: 0,
+        no: 0
+      }
+    
+      this.tipoDePadecimiento={
+        Sintomático: 0,
+        Asintomático: 0
+      }
+      this.datosFireBase = []
       this.datosFireBase = data
       this.countItems()
+      EmitterService.setheatMap(this.heatMapList).emit(JSON.stringify(this.positions));
+    });
+
+    await Storage.set({
+      key: 'heatMapArray',
+      value: JSON.stringify(this.positions)
     });
   }
 
@@ -126,6 +169,7 @@ export class Tab2Page implements OnInit, OnDestroy {
       if(value.tipoDePadecimiento === 'Asintomático'){
         this.tipoDePadecimiento.Asintomático = this.tipoDePadecimiento.Asintomático+1
       }
+      this.positions.push({latitud: value.latitude, longitud: value.longitude})
     })
 
     this.contactoC.data.datasets[0].data = [this.contacto.si, this.contacto.no]
@@ -146,6 +190,10 @@ export class Tab2Page implements OnInit, OnDestroy {
     this.tipoPadecimiento.data.datasets[0].data = [this.tipoDePadecimiento.Sintomático, this.tipoDePadecimiento.Asintomático]
     this.tipoPadecimiento.update()
     
+  }
+
+  refresh(){
+    EmitterService.setheatMap(this.heatMapList).emit(JSON.stringify(this.positions));
   }
 
   ngOnDestroy(){

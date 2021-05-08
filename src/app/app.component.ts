@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Platform } from '@ionic/angular';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,15 @@ import { Component } from '@angular/core';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
-  constructor() {}
+  constructor(
+    private platform: Platform,
+  ) {
+    this.changeTheme();
+    document.body.classList.toggle('dark');
+  }
+
+
+  changeTheme() {
+    document.body.setAttribute('data-theme', 'dark');
+  }
 }

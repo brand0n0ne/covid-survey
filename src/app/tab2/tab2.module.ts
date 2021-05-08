@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Tab2Page } from './tab2.page';
 import { ExploreContainerComponentModule } from '../explore-container/explore-container.module';
+import { GoogleMapComponent } from './mapComponent/google-map';
 
 import { Tab2PageRoutingModule } from './tab2-routing.module';
 
@@ -16,6 +17,6 @@ import { Tab2PageRoutingModule } from './tab2-routing.module';
     ExploreContainerComponentModule,
     Tab2PageRoutingModule
   ],
-  declarations: [Tab2Page]
+  declarations: [Tab2Page, GoogleMapComponent]
 })
 export class Tab2PageModule {}
