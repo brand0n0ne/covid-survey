@@ -22,7 +22,7 @@ export class Tab2Page implements OnDestroy {
   @ViewChild('ingresoHospitalario') ingresoHospitalChart;
   @ViewChild('padecimientoCovid') padecimientoChart;
   @ViewChild('recaida') recaidaChart;
-  @ViewChild('tipoDePadecimiento') tipoDePadecimientoChart;
+  @ViewChild('tipoDePadecimiento') tipoDePadecimientoChart; 
   @ViewChild('map', { read: '', static: false}) mapComponent: GoogleMapComponent;
   @Input() heatMapList: string;
   contactoC: any;
@@ -126,7 +126,7 @@ export class Tab2Page implements OnDestroy {
     });
   }
 
-  countItems(): void {
+  async countItems() {
     this.datosFireBase.forEach( value =>{
       if(value.contactoConPersona === 'si'){
         this.contacto.si = this.contacto.si+1
@@ -189,15 +189,19 @@ export class Tab2Page implements OnDestroy {
 
     this.tipoPadecimiento.data.datasets[0].data = [this.tipoDePadecimiento.Sintomático, this.tipoDePadecimiento.Asintomático]
     this.tipoPadecimiento.update()
+
+    EmitterService.setheatMap(this.heatMapList).emit(JSON.stringify(this.positions));
+
+    await Storage.set({
+      key: 'heatMapArray',
+      value: JSON.stringify(this.positions)
+    });
     
   }
 
-  refresh(){
-    EmitterService.setheatMap(this.heatMapList).emit(JSON.stringify(this.positions));
-  }
 
   ngOnDestroy(){
-    
+    EmitterService.setheatMap(this.heatMapList).emit(JSON.stringify(this.positions));
   }
 
   

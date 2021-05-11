@@ -17,6 +17,7 @@ export class Tab1Page {
   lat: Number;
   lng: Number;
   submittedForm = 'false';
+  nextFifteen: any;
 
 
   constructor(
@@ -51,6 +52,10 @@ export class Tab1Page {
     this.hasSubmitted()
   }
 
+  getFormatDate(dateObj) {
+    return dateObj.getDate() + "-"+ (dateObj.getMonth()+1)+ "-" +dateObj.getFullYear();
+}
+
   async presentAlert() {
     const alert = await this.alertController.create({
       header: 'Error',
@@ -75,10 +80,34 @@ export class Tab1Page {
     this.submittedForm = 'false' 
   }
 
+  async presentFifteenDays() {
+    const alert = await this.alertController.create({
+      header: 'Seguimiento',
+      subHeader: 'Encuesta',
+      message: 'han transcurrido 15 días desde tu ultima encuesta, favor de llenar encuesta de seguimiento',
+      buttons: ['OK']
+    });
+
+    await alert.present();
+
+    const { role } = await alert.onDidDismiss();
+  }
+
 
   async hasSubmitted(){
     const { value } = await Storage.get({ key: 'submittedSurvey' });
-    this.submittedForm = value
+
+    const { value:datSubmit } = await Storage.get({ key: 'dateSubmited' });
+
+    if(datSubmit){
+      const today = new Date();
+      if(datSubmit === this.getFormatDate(today)){
+        this.presentFifteenDays()
+        return this.submittedForm = 'true';
+      }
+    }
+
+    return this.submittedForm = value 
   }
 
   async presentSuccess() {
@@ -96,6 +125,11 @@ export class Tab1Page {
       value: 'true'
     });
 
+    await Storage.set({
+      key: 'dateSubmited',
+      value: this.nextFifteen
+    });
+
     this.submittedForm = 'true'
 
     const { role } = await alert.onDidDismiss();
@@ -105,10 +139,17 @@ export class Tab1Page {
     return this.userForm;
   }
 
+  addDays(dateObj, numDays) {
+      dateObj.setDate(dateObj.getDate() + numDays);
+      return dateObj.getDate() + "-"+ (dateObj.getMonth()+1)+ "-" +dateObj.getFullYear();
+  }
+
   onSubmit() {
     if (this.userForm.status === 'INVALID') {
       this.presentAlert()
     } else {
+      const today = new Date();
+      this.nextFifteen = this.addDays(today , 15); // Add 7 days
       this.presentSuccess();
       this.userForm.value.latitude = this.lat
       this.userForm.value.longitude = this.lng

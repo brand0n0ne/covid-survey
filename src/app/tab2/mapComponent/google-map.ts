@@ -18,12 +18,14 @@ export class GoogleMapComponent implements OnInit {
     @Input() heatMapList: string;
 
     public map: any;
+    public heatmap: any;
     public markers: any[] = [];
-    private mapsLoaded = false;
-    private networkHandler = null;
-    private lat;
-    private lng;
+    public mapsLoaded = false;
+    public networkHandler = null;
+    public lat;
+    public lng;
     public heatMapPoints: any[] = [];
+    rawData: any;
 
 
 
@@ -34,38 +36,37 @@ export class GoogleMapComponent implements OnInit {
         @Inject(DOCUMENT) private _document) { }
 
     ngOnInit() {
-        this.init().then((res) => {
-            console.log('Google Maps ready.');
-        }, (err) => {
-            console.log(err);
-        });
 
-        EmitterService.setheatMap(this.heatMapList).subscribe(value => {
-            if (value !== undefined) {
-                var emmiterVal = JSON.parse(value);
-                emmiterVal.forEach(element => {
-                    this.heatMapPoints.push(new google.maps.LatLng(element.latitud, element.longitud))
-                });
-            } else {
-                this.getFromLocal() 
-            }
-
-        });
-
+        EmitterService.setheatMap(this.heatMapList).subscribe(()=>{
+            this.asignValues();
+            this.init().then((res) => {
+                console.log('Google Maps ready.');
+            }, (err) => {
+                console.log(err);
+            });
+        })
         
     }
 
-    async getFromLocal() {
-        const { value } = await Storage.get({ key: 'submittedSurvey' });
-        if(value !== null){
-            var emmiterVal = JSON.parse(value);
-            emmiterVal.forEach(element => {
-                this.heatMapPoints.push(new google.maps.LatLng(element.latitud, element.longitud))
-            });
-        }
+    private async asignValues(): Promise<any>{
+
+        return new Promise(async (resolve, reject) => {
+
+            const { value } = await Storage.get({ key: 'heatMapArray' });
+            localStorage.setItem("heatMapArrayLocal", value)
+            if(value !== null){
+                var emmiterVal = JSON.parse(value);
+                emmiterVal.forEach(element => {
+                    this.heatMapPoints.push({location: new google.maps.LatLng(element.latitud, element.longitud), weight: 3})
+                });
+            }
+
+        });
+        
     }
 
-    private init(): Promise<any> {
+
+    public init(): Promise<any> {
 
         return new Promise((resolve, reject) => {
 
@@ -88,7 +89,7 @@ export class GoogleMapComponent implements OnInit {
 
     }
 
-    private loadSDK(): Promise<any> {
+    public loadSDK(): Promise<any> {
 
         console.log('Loading Google Maps SDK');
 
@@ -159,7 +160,7 @@ export class GoogleMapComponent implements OnInit {
 
     }
 
-    private injectSDK(): Promise<any> {
+    public injectSDK(): Promise<any> {
 
         return new Promise((resolve, reject) => {
 
@@ -184,7 +185,7 @@ export class GoogleMapComponent implements OnInit {
 
     }
 
-    private initMap(): Promise<any> {
+    public initMap(): Promise<any> {
 
         return new Promise((resolve, reject) => {
 
@@ -206,10 +207,18 @@ export class GoogleMapComponent implements OnInit {
 
                 this.map = new google.maps.Map(this.element.nativeElement, mapOptions);
 
-                var heatmap = new google.maps.visualization.HeatmapLayer({
-                    data: this.heatMapPoints
+
+                var newPoints: any[] = [];
+                var emmiterVal = JSON.parse(localStorage.getItem("heatMapArrayLocal"));
+                emmiterVal.forEach(element => {
+                    newPoints.push({location: new google.maps.LatLng(element.latitud, element.longitud), weight: 3})
                 });
-                heatmap.setMap(this.map);
+
+                this.heatmap = new google.maps.visualization.HeatmapLayer({
+                    data: newPoints
+                });
+
+                this.heatmap.setMap(this.map);
 
                 resolve(true);
 
@@ -222,5 +231,7 @@ export class GoogleMapComponent implements OnInit {
         });
 
     }
+
+
 
 }
